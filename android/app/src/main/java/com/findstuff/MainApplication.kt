@@ -1,4 +1,4 @@
-package com.findstuff
+package com.find_stuff.find_stuff
 
 import android.app.Application
 import com.facebook.react.PackageList
