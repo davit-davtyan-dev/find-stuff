@@ -1,29 +1,43 @@
-import React, {type PropsWithChildren} from 'react';
+import React from 'react';
 import {ScrollView, StyleSheet} from 'react-native';
 import {ThemedView} from './ThemedView';
 import NavigationHeader from './NavigationHeader';
 
 import type {Item} from '../api/items.api';
+import type {ViewProps} from './custom';
 
-type LayoutProps = PropsWithChildren<{
-  title: string;
+type LayoutProps = {
+  title?: string;
   breadcrumbsItem?: Item;
   canGoBack?: boolean;
   scrollViewRef?: React.MutableRefObject<ScrollView | null>;
-}>;
+} & ViewProps;
 
-export default function Layout(props: LayoutProps) {
+export default function Layout({
+  title,
+  breadcrumbsItem,
+  canGoBack,
+  scrollViewRef,
+  children,
+  ...props
+}: LayoutProps) {
   return (
     <>
-      <NavigationHeader
-        title={props.title}
-        item={props.breadcrumbsItem}
-        canGoBack={props.canGoBack}
-      />
+      {title && (
+        <NavigationHeader
+          title={title}
+          item={breadcrumbsItem}
+          canGoBack={canGoBack}
+        />
+      )}
 
-      <ThemedView style={styles.container}>
-        <ScrollView ref={props.scrollViewRef}>
-          <ThemedView style={styles.content}>{props.children}</ThemedView>
+      <ThemedView flex={1}>
+        <ScrollView
+          ref={scrollViewRef}
+          contentContainerStyle={styles.scrollContainer}>
+          <ThemedView flex={1} p={4} gap={16} overflow="hidden" {...props}>
+            {children}
+          </ThemedView>
         </ScrollView>
       </ThemedView>
     </>
@@ -31,13 +45,7 @@ export default function Layout(props: LayoutProps) {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  scrollContainer: {
     flex: 1,
-  },
-  content: {
-    flex: 1,
-    padding: 16,
-    gap: 16,
-    overflow: 'hidden',
   },
 });

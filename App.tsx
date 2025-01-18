@@ -6,21 +6,19 @@
  */
 
 import React from 'react';
-
+import {Provider} from 'react-redux';
 import {NavigationContainer} from '@react-navigation/native';
-import {RoomsProvider} from './contexts/RoomsContext';
-import {ItemsProvider} from './contexts/ItemsContext';
-import TabNavigator from './navigation/TabNavigator';
+
+import RootNavigator from './navigation/RootNavigator';
+import {store} from './redux/store';
 
 function App(): React.JSX.Element {
   return (
-    <RoomsProvider>
-      <ItemsProvider>
-        <NavigationContainer>
-          <TabNavigator />
-        </NavigationContainer>
-      </ItemsProvider>
-    </RoomsProvider>
+    <Provider store={store}>
+      <NavigationContainer>
+        <RootNavigator />
+      </NavigationContainer>
+    </Provider>
   );
 }
 

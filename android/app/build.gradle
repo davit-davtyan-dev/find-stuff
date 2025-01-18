@@ -4,6 +4,7 @@ apply plugin: "com.facebook.react"
 apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle") // for react-native-vector-icons
 apply plugin: "com.android.application" // for firebase
 apply plugin: "com.google.gms.google-services" // for firebase
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle" // for react-native-config
 
 /**
  * This is the configuration block to customize your React Native Android app.

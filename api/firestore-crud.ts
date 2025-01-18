@@ -16,6 +16,7 @@ export class FirestoreApi<T extends AnyRecord = AnyRecord> {
     const ref = await this.collection.add({
       ...data,
       createdAt: new Date(),
+      _v: 1,
     });
     const newDocument = await ref.get();
 
@@ -28,9 +29,9 @@ export class FirestoreApi<T extends AnyRecord = AnyRecord> {
   async get() {
     const data = await this.collection.orderBy('createdAt', 'asc').get();
 
-    return data.docs.map(roomDoc => ({
-      id: roomDoc.id,
-      ...roomDoc.data(),
+    return data.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
     }));
   }
 
