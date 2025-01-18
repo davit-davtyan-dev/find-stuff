@@ -7,9 +7,11 @@ GoogleSignin.configure({
 });
 
 export interface User {
+  /** NOTE: this filed probably is not nullable */
   displayName: string | null;
   photoURL: string;
   phoneNumber: string | null;
+  /** @todo define correct type */
   tenantId: null;
   emailVerified: boolean;
   isAnonymous: boolean;
@@ -24,6 +26,9 @@ export interface User {
 }
 
 export async function loginWithGoogleApi() {
+  // TODO: check if this code is useful
+  // Check if your device supports Google Play
+  // await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
   const signInResult = await GoogleSignin.signIn();
 
   if (!signInResult.data?.idToken) {
