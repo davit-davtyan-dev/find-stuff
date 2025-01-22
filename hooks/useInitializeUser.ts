@@ -9,6 +9,13 @@ export default function useInitializeUser() {
   const dispatch = useAppDispatch();
   const appState = useAppState();
   const user = useAppSelector(state => state.auth.user);
+  const userSpaces = useAppSelector(state => state.space.userSpaces);
+
+  const isInitialized = useAppSelector(state => state.auth.isInitialized);
+  const userLoading = useAppSelector(state => state.auth.loading);
+  const userSpacesLoading = useAppSelector(
+    state => state.space.userSpacesLoading,
+  );
 
   useEffect(() => {
     if (appState !== 'active') {
@@ -26,4 +33,11 @@ export default function useInitializeUser() {
 
     dispatch(fetchUserSpaces({userId}));
   }, [dispatch, userId, appState]);
+
+  return {
+    user,
+    userSpaces,
+    isInitialized,
+    loading: userLoading || userSpacesLoading,
+  };
 }

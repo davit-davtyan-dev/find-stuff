@@ -1,7 +1,7 @@
 import React from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Layout from '../../components/Layout';
-import {TouchableOpacity, View} from '../../components/custom';
+import {TouchableOpacity} from '../../components/custom';
 import {ThemedText} from '../../components/ThemedText';
 
 import {signIn} from '../../redux/modules/auth';
@@ -13,23 +13,21 @@ export default function LoginScreen() {
   const dispatch = useAppDispatch();
 
   return (
-    <Layout>
-      <View h="100%" center>
-        <ThemedText mt={-16} mb={16} type="title">
-          Login
-        </ThemedText>
-        <TouchableOpacity
-          py={2}
-          px={4}
-          center
-          flexDir="row"
-          borderRadius={8}
-          bgColor={colors.backgroundSecondary}
-          onPress={() => dispatch(signIn())}>
-          <MaterialCommunityIcons name="google" size={24} color={colors.tint} />
-          <ThemedText ml={2}>Login with Google</ThemedText>
-        </TouchableOpacity>
-      </View>
+    <Layout pb={16} center>
+      <ThemedText mb={16} type="title">
+        Login
+      </ThemedText>
+      <TouchableOpacity
+        py={2}
+        px={4}
+        center
+        flexDir="row"
+        borderRadius={8}
+        bgColor={colors.backgroundSecondary}
+        onPress={() => dispatch(signIn())}>
+        <MaterialCommunityIcons name="google" size={24} color={colors.tint} />
+        <ThemedText ml={2}>Login with Google</ThemedText>
+      </TouchableOpacity>
     </Layout>
   );
 }

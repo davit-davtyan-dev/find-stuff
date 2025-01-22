@@ -19,4 +19,8 @@ export default class Logger {
   log(...args: Array<any>) {
     console.log(...this.formatLog(args));
   }
+
+  error(...args: Array<any>) {
+    console.error(...this.formatLog(args));
+  }
 }

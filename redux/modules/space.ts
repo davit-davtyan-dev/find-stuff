@@ -5,26 +5,26 @@ import userToSpaceApi, {UserToSpace} from '../../api/userToSpace.api';
 
 export interface SpaceState {
   userSpaces: Array<UserToSpace>;
+  userSpacesLoading: boolean;
   currentSpace: Space | null;
+  currentSpaceLoading: boolean;
 }
 
 const initialState: SpaceState = {
   userSpaces: [],
+  userSpacesLoading: false,
   currentSpace: null,
+  currentSpaceLoading: false,
 };
 
 export const fetchUserSpaces = createAsyncThunk(
   'space/fetchUserSpaces',
-  async ({userId}: {userId: string}) => {
-    const currentUserSpaces = await userToSpaceApi.get({userId});
-    const spaceIds = currentUserSpaces.map(space => space.spaceId);
-    const spaces = await spacesApi.get({id: {in: spaceIds}});
+  ({userId}: {userId: string}) => userToSpaceApi.get({userId}),
+);
 
-    return currentUserSpaces.map(userToSpace => ({
-      ...userToSpace,
-      space: spaces.find(space => space.id === userToSpace.spaceId),
-    }));
-  },
+export const fetchCurrentSpaces = createAsyncThunk(
+  'space/fetchCurrentSpaces',
+  ({spaceId}: {spaceId: string}) => spacesApi.getById(spaceId),
 );
 
 const spaceSlice = createSlice({
@@ -33,17 +33,26 @@ const spaceSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(fetchUserSpaces.pending, () => {})
+      .addCase(fetchUserSpaces.pending, state => {
+        state.userSpacesLoading = true;
+      })
       .addCase(fetchUserSpaces.fulfilled, (state, action) => {
         state.userSpaces = action.payload;
-        if (!state.currentSpace) {
-          const currentSpace = state.userSpaces.find(
-            userSpace => userSpace.space,
-          );
-          state.currentSpace = currentSpace?.space || null;
-        }
+        state.userSpacesLoading = false;
       })
-      .addCase(fetchUserSpaces.rejected, () => {})
+      .addCase(fetchUserSpaces.rejected, state => {
+        state.userSpacesLoading = false;
+      })
+      .addCase(fetchCurrentSpaces.pending, state => {
+        state.currentSpaceLoading = true;
+      })
+      .addCase(fetchCurrentSpaces.fulfilled, (state, action) => {
+        state.currentSpace = action.payload;
+        state.currentSpaceLoading = false;
+      })
+      .addCase(fetchCurrentSpaces.rejected, state => {
+        state.currentSpaceLoading = false;
+      })
       .addCase(signOut.fulfilled, () => initialState);
   },
 });

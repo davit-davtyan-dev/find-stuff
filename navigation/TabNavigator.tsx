@@ -1,7 +1,9 @@
 import React from 'react';
+import {ActivityIndicator} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import {View} from '../components/custom';
 import RoomsStack from './RoomsStack';
 import SearchStack from './SearchStack';
 import ProfileStack from './ProfileStack';
@@ -30,7 +32,15 @@ const ProfileTabIcon = ({color, size}: TabIconProps) => (
 export default function TabNavigator() {
   const colors = useColors();
 
-  useInitializeSpaceData();
+  const {loading} = useInitializeSpaceData();
+
+  if (loading) {
+    return (
+      <View h="100%" w="100%" center>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
   return (
     <Tab.Navigator

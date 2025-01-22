@@ -72,60 +72,52 @@ export default function SearchScreen() {
 
   return (
     <Layout title="Search" scrollViewRef={scrollRef}>
-      <View flex={1}>
-        <View
-          flex={1}
-          justifyContent={isSearching ? 'flex-start' : 'center'}
-          minHeight={isSearching ? 80 : 200}
-          pt={isSearching ? 0 : 5}>
-          <SearchInput
-            onSearch={handleSearch}
-            expanded={!isSearching}
-            onFocus={() => scrollRef.current?.scrollToEnd?.({animated: true})}
-          />
-        </View>
-        {isSearching && (
-          <View p={4}>
-            {hasSearchResults ? (
-              <>
-                {!!foundRooms.length && (
-                  <View>
-                    <ThemedText type="subtitle">Rooms</ThemedText>
-                    <Divider my={2} />
-                    <View gap={24}>
-                      {foundRooms.map(room => (
-                        <RoomCard key={room.id} room={room} />
-                      ))}
-                    </View>
-                  </View>
-                )}
-                {!!foundRooms.length && !!foundItems.length && (
-                  <Divider my={4} />
-                )}
-                {!!foundItems.length && (
-                  <View>
-                    <ThemedText type="subtitle">Items</ThemedText>
-                    <Divider my={2} />
-                    <View gap={24}>
-                      {foundItems.map(item => (
-                        <ItemCard key={item.id} item={item} showPath />
-                      ))}
-                    </View>
-                  </View>
-                )}
-              </>
-            ) : (
-              <ThemedText
-                type="subtitle"
-                textAlign="center"
-                mt={5}
-                opacity={0.7}>
-                No results found
-              </ThemedText>
-            )}
-          </View>
-        )}
+      <View
+        flex={1}
+        justifyContent={isSearching ? 'flex-start' : 'center'}
+        minHeight={isSearching ? 80 : 200}
+        pt={isSearching ? 0 : 5}>
+        <SearchInput
+          onSearch={handleSearch}
+          expanded={!isSearching}
+          onFocus={() => scrollRef.current?.scrollToEnd?.({animated: true})}
+        />
       </View>
+      {isSearching && (
+        <View p={4}>
+          {hasSearchResults ? (
+            <>
+              {!!foundRooms.length && (
+                <View>
+                  <ThemedText type="subtitle">Rooms</ThemedText>
+                  <Divider my={2} />
+                  <View gap={24}>
+                    {foundRooms.map(room => (
+                      <RoomCard key={room.id} room={room} />
+                    ))}
+                  </View>
+                </View>
+              )}
+              {!!foundRooms.length && !!foundItems.length && <Divider my={4} />}
+              {!!foundItems.length && (
+                <View>
+                  <ThemedText type="subtitle">Items</ThemedText>
+                  <Divider my={2} />
+                  <View gap={24}>
+                    {foundItems.map(item => (
+                      <ItemCard key={item.id} item={item} showPath />
+                    ))}
+                  </View>
+                </View>
+              )}
+            </>
+          ) : (
+            <ThemedText type="subtitle" textAlign="center" mt={5} opacity={0.7}>
+              No results found
+            </ThemedText>
+          )}
+        </View>
+      )}
     </Layout>
   );
 }

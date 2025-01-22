@@ -12,6 +12,19 @@ export class FirestoreApi<T extends AnyRecord = AnyRecord> {
     this.collection = firestore().collection<T>(collectionPath);
   }
 
+  protected serializeData(
+    doc: {id: string; data: () => T | undefined},
+    fallbackData?: Partial<T>,
+  ) {
+    const data = (doc.data() || fallbackData || {}) as T;
+
+    return {
+      id: doc.id,
+      ...data,
+      createdAt: 'createdAt' in data ? String(data.createdAt) : undefined,
+    };
+  }
+
   async create(data: T) {
     const ref = await this.collection.add({
       ...data,
@@ -20,16 +33,13 @@ export class FirestoreApi<T extends AnyRecord = AnyRecord> {
     });
     const newDocument = await ref.get();
 
-    return {
-      id: newDocument.id,
-      ...(newDocument.data() || data),
-    };
+    return this.serializeData(newDocument, data);
   }
 
   async get(
     filters: Partial<
       Record<
-        keyof T | 'id',
+        keyof T,
         | string
         | Partial<
             Record<
@@ -59,11 +69,12 @@ export class FirestoreApi<T extends AnyRecord = AnyRecord> {
 
     const data = await query.get();
 
-    return data.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-      createdAt: 'createdAt' in doc ? String(doc.createdAt) : undefined,
-    }));
+    return data.docs.map(doc => this.serializeData(doc));
+  }
+
+  async getById(id: string) {
+    const doc = await this.collection.doc(id).get();
+    return this.serializeData(doc);
   }
 
   update(id: string, data: Partial<T & {_v: number}>) {

@@ -4,15 +4,10 @@ import {View} from '../components/custom';
 import TabNavigator from './TabNavigator';
 import LoginStack from './LoginStack';
 
-import useAppSelector from '../hooks/useAppSelector';
 import useInitializeUser from '../hooks/useInitializeUser';
 
 export default function RootNavigator() {
-  const user = useAppSelector(state => state.auth.user);
-  const isInitialized = useAppSelector(state => state.auth.isInitialized);
-  const loading = useAppSelector(state => state.auth.loading);
-
-  useInitializeUser();
+  const {user, isInitialized, loading} = useInitializeUser();
 
   if (!isInitialized || loading) {
     return (
