@@ -1,13 +1,12 @@
-import {useEffect} from 'react';
-import {useAppState} from '@react-native-community/hooks';
+import {useCallback} from 'react';
 import {initializeUser} from '../redux/modules/auth';
 import {fetchUserSpaces} from '../redux/modules/space';
 import useAppDispatch from './useAppDispatch';
 import useAppSelector from './useAppSelector';
+import useAppActiveEffect from './useAppActiveEffect';
 
 export default function useInitializeUser() {
   const dispatch = useAppDispatch();
-  const appState = useAppState();
   const user = useAppSelector(state => state.auth.user);
   const userSpaces = useAppSelector(state => state.space.userSpaces);
 
@@ -16,23 +15,22 @@ export default function useInitializeUser() {
   const userSpacesLoading = useAppSelector(
     state => state.space.userSpacesLoading,
   );
-
-  useEffect(() => {
-    if (appState !== 'active') {
-      return;
-    }
-    dispatch(initializeUser());
-  }, [dispatch, appState]);
-
   const userId = user?.uid;
 
-  useEffect(() => {
-    if (!userId || appState !== 'active') {
-      return;
-    }
+  useAppActiveEffect(
+    useCallback(() => {
+      dispatch(initializeUser());
+    }, [dispatch]),
+  );
 
-    dispatch(fetchUserSpaces({userId}));
-  }, [dispatch, userId, appState]);
+  useAppActiveEffect(
+    useCallback(() => {
+      if (!userId) {
+        return;
+      }
+      dispatch(fetchUserSpaces({userId}));
+    }, [dispatch, userId]),
+  );
 
   return {
     user,
