@@ -1,5 +1,5 @@
-import {useContext, useMemo} from 'react';
-import {ItemsContext} from '../contexts/ItemsContext';
+import {useMemo} from 'react';
+import useAppSelector from './useAppSelector';
 import type {Item} from '../api/items.api';
 
 export default function useContainerItems({
@@ -9,7 +9,7 @@ export default function useContainerItems({
   roomId?: string;
   container?: Item;
 }) {
-  const {items} = useContext(ItemsContext);
+  const items = useAppSelector(state => state.item.items);
 
   return useMemo(
     () =>

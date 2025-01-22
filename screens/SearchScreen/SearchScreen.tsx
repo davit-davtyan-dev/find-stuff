@@ -1,4 +1,4 @@
-import React, {useContext, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {Divider, View} from '../../components/custom';
 import {ThemedText} from '../../components/ThemedText';
 import Layout from '../../components/Layout';
@@ -6,8 +6,7 @@ import RoomCard from '../RoomsScreen/RoomCard';
 import ItemCard from '../ItemsScreen/ItemCard';
 import SearchInput from './SearchInput';
 
-import {RoomsContext} from '../../contexts/RoomsContext';
-import {ItemsContext} from '../../contexts/ItemsContext';
+import useAppSelector from '../../hooks/useAppSelector';
 import Logger from '../../utils/logger';
 
 import type {ScrollView} from 'react-native';
@@ -42,8 +41,8 @@ function filter<T extends Room | Item = Room | Item>(
 }
 
 export default function SearchScreen() {
-  const {rooms} = useContext(RoomsContext);
-  const {items} = useContext(ItemsContext);
+  const rooms = useAppSelector(state => state.room.rooms);
+  const items = useAppSelector(state => state.item.items);
   const [isSearching, setIsSearching] = useState(false);
   const [foundRooms, setFoundRooms] = useState<Array<Room>>([]);
   const [foundItems, setFoundItems] = useState<Array<Item>>([]);

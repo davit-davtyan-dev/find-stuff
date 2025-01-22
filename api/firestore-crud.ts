@@ -26,16 +26,47 @@ export class FirestoreApi<T extends AnyRecord = AnyRecord> {
     };
   }
 
-  async get() {
-    const data = await this.collection.orderBy('createdAt', 'asc').get();
+  async get(
+    filters: Partial<
+      Record<
+        keyof T | 'id',
+        | string
+        | Partial<
+            Record<
+              FirebaseFirestoreTypes.WhereFilterOp,
+              string | number | boolean | Array<string> | Array<number>
+            >
+          >
+      >
+    > = {},
+  ) {
+    let query = this.collection.orderBy('createdAt', 'asc');
+
+    for (const key in filters) {
+      let opStr: FirebaseFirestoreTypes.WhereFilterOp = '==';
+      let value = filters[key] as any;
+      if (
+        typeof filters[key] === 'object' &&
+        Object.keys(filters[key]).length
+      ) {
+        opStr = Object.keys(
+          filters[key],
+        )[0] as FirebaseFirestoreTypes.WhereFilterOp;
+        value = filters[key][opStr];
+      }
+      query = query.where(key, opStr, value);
+    }
+
+    const data = await query.get();
 
     return data.docs.map(doc => ({
       id: doc.id,
       ...doc.data(),
+      createdAt: 'createdAt' in doc ? String(doc.createdAt) : undefined,
     }));
   }
 
-  update(id: string, data: Partial<T>) {
+  update(id: string, data: Partial<T & {_v: number}>) {
     return this.collection.doc(id).update(data as any);
   }
 

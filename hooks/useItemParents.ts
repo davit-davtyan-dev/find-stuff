@@ -1,6 +1,5 @@
-import {useContext, useMemo} from 'react';
-import {ItemsContext} from '../contexts/ItemsContext';
-import {RoomsContext} from '../contexts/RoomsContext';
+import {useMemo} from 'react';
+import useAppSelector from './useAppSelector';
 
 import type {Item} from '../api/items.api';
 import type {Room} from '../api/rooms.api';
@@ -22,8 +21,8 @@ function findParents(
 }
 
 export default function useItemParents(item: Item): [Room, ...Array<Item>] {
-  const {items} = useContext(ItemsContext);
-  const {rooms} = useContext(RoomsContext);
+  const items = useAppSelector(state => state.item.items);
+  const rooms = useAppSelector(state => state.room.rooms);
 
   return useMemo(() => {
     const room = rooms.find(r => r.id === item.roomId);

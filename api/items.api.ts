@@ -4,6 +4,7 @@ export interface Item {
   id: string;
   name: string;
   roomId: string;
+  spaceId: string;
   container?: Item;
   containerId?: string;
   isContainer?: boolean;

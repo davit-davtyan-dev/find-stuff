@@ -1,15 +1,14 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import RoomsScreen from '../screens/RoomsScreen/RoomsScreen';
 import ItemsStack from './ItemsStack';
-import {RoomsContext} from '../contexts/RoomsContext';
-import {ItemsContext} from '../contexts/ItemsContext';
+import useAppSelector from '../hooks/useAppSelector';
 
 const Stack = createNativeStackNavigator();
 
 export default function RoomsStack() {
-  const {rooms} = useContext(RoomsContext);
-  const {items} = useContext(ItemsContext);
+  const rooms = useAppSelector(state => state.room.rooms);
+  const items = useAppSelector(state => state.item.items);
 
   return (
     <Stack.Navigator

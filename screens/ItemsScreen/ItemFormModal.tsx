@@ -4,6 +4,7 @@ import {Divider, Row, TouchableOpacity, View} from '../../components/custom';
 import {ThemedText} from '../../components/ThemedText';
 import CustomModal, {type CustomModalProps} from '../../components/CustomModal';
 import TagInput from '../../components/TagInput';
+import useAppSelector from '../../hooks/useAppSelector';
 import useColors from '../../hooks/useColors';
 
 import type {ItemFormData} from '../../api/items.api';
@@ -37,10 +38,16 @@ const ItemForm = (props: ItemFormProps) => {
     props.initialValue?.isContainer || false,
   );
   const [loading, setLoading] = useState(false);
+  const currentSpace = useAppSelector(state => state.space.currentSpace);
 
   const handleSubmit = () => {
+    if (!currentSpace) {
+      throw new Error('ItemForm: Something went wrong, no current space!');
+    }
     setLoading(true);
-    props.onSubmit({name, tags, isContainer}).finally(() => setLoading(false));
+    props
+      .onSubmit({name, tags, isContainer, spaceId: currentSpace.id})
+      .finally(() => setLoading(false));
   };
 
   const isDisabled = !name || loading;

@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useState} from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {Divider, Row, TouchableOpacity, View} from '../../components/custom';
@@ -8,24 +8,27 @@ import ConfirmationModal from '../../components/ConfirmationModal';
 import RoomCard from './RoomCard';
 import RoomFormModal from './RoomFormModal';
 
+import {createRoom, deleteRoom, updateRoom} from '../../redux/modules/room';
+import useAppDispatch from '../../hooks/useAppDispatch';
+import useAppSelector from '../../hooks/useAppSelector';
 import useColors from '../../hooks/useColors';
-import {RoomsContext} from '../../contexts/RoomsContext';
 
 import type {Room, RoomFormData} from '../../api/rooms.api';
 
 export default function RoomsScreen() {
   const colors = useColors();
-  const {rooms, createRoom, deleteRoom, updateRoom} = useContext(RoomsContext);
+  const rooms = useAppSelector(state => state.room.rooms);
   const [formModalVisible, setFormModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [roomToEdit, setRoomToEdit] = useState<Room | null>(null);
   const [roomToDelete, setRoomToDelete] = useState<Room | null>(null);
+  const dispatch = useAppDispatch();
 
   const handleRoomSave = async (data: RoomFormData) => {
     if (roomToEdit) {
-      await updateRoom(roomToEdit.id, data);
+      await dispatch(updateRoom({id: roomToEdit.id, data}));
     } else {
-      await createRoom(data);
+      await dispatch(createRoom({data}));
     }
     setRoomToEdit(null);
     setFormModalVisible(false);
@@ -35,7 +38,7 @@ export default function RoomsScreen() {
     if (!roomToDelete) {
       return;
     }
-    await deleteRoom(roomToDelete.id);
+    await dispatch(deleteRoom({id: roomToDelete.id}));
     setDeleteModalVisible(false);
     setRoomToDelete(null);
   };

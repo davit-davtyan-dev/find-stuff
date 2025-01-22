@@ -4,6 +4,7 @@ import {Divider, Row, TouchableOpacity, View} from '../../components/custom';
 import {ThemedText} from '../../components/ThemedText';
 import CustomModal, {type CustomModalProps} from '../../components/CustomModal';
 import TagInput from '../../components/TagInput';
+import useAppSelector from '../../hooks/useAppSelector';
 import useColors from '../../hooks/useColors';
 
 import type {RoomFormData} from '../../api/rooms.api';
@@ -32,10 +33,16 @@ const RoomForm = (props: RoomFormProps) => {
   const [name, setName] = useState(props.initialValue?.name || '');
   const [tags, setTags] = useState(props.initialValue?.tags || []);
   const [loading, setLoading] = useState(false);
+  const currentSpace = useAppSelector(state => state.space.currentSpace);
 
   const handleSubmit = () => {
+    if (!currentSpace) {
+      throw new Error('RoomForm: Something went wrong, no current space!');
+    }
     setLoading(true);
-    props.onSubmit({name, tags}).finally(() => setLoading(false));
+    props
+      .onSubmit({name, tags, spaceId: currentSpace.id})
+      .finally(() => setLoading(false));
   };
 
   const isDisabled = !name || loading;

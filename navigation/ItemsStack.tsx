@@ -1,9 +1,9 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import ItemsScreen, {
   type ItemsScreenProps,
 } from '../screens/ItemsScreen/ItemsScreen';
-import {ItemsContext} from '../contexts/ItemsContext';
+import useAppSelector from '../hooks/useAppSelector';
 import useContainerItems from '../hooks/useContainerItems';
 
 import type {Item} from '../api/items.api';
@@ -11,7 +11,7 @@ import type {Item} from '../api/items.api';
 const Stack = createNativeStackNavigator();
 
 export default function ItemsStack(props: ItemsScreenProps) {
-  const {items: allItems} = useContext(ItemsContext);
+  const allItems = useAppSelector(state => state.item.items);
   const {item: container, roomId} = props.route?.params || {};
   const items = useContainerItems({container, roomId});
 

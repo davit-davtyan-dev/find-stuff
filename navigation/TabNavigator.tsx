@@ -6,8 +6,7 @@ import RoomsStack from './RoomsStack';
 import SearchStack from './SearchStack';
 import ProfileStack from './ProfileStack';
 import useColors from '../hooks/useColors';
-import {RoomsProvider} from '../contexts/RoomsContext';
-import {ItemsProvider} from '../contexts/ItemsContext';
+import useInitializeSpaceData from '../hooks/useInitializeSpaceData';
 
 const Tab = createBottomTabNavigator();
 
@@ -31,35 +30,33 @@ const ProfileTabIcon = ({color, size}: TabIconProps) => (
 export default function TabNavigator() {
   const colors = useColors();
 
+  useInitializeSpaceData();
+
   return (
-    <RoomsProvider>
-      <ItemsProvider>
-        <Tab.Navigator
-          screenOptions={{
-            headerShown: false,
-            tabBarActiveTintColor: colors.tint,
-            tabBarInactiveTintColor: colors.textSecondary,
-            tabBarStyle: {
-              backgroundColor: colors.backgroundSecondary,
-            },
-          }}>
-          <Tab.Screen
-            name="RoomsTab"
-            component={RoomsStack}
-            options={{tabBarIcon: RoomsTabIcon, tabBarLabel: 'Rooms'}}
-          />
-          <Tab.Screen
-            name="SearchTab"
-            component={SearchStack}
-            options={{tabBarIcon: SearchTabIcon, tabBarLabel: 'Search'}}
-          />
-          <Tab.Screen
-            name="ProfileTab"
-            component={ProfileStack}
-            options={{tabBarIcon: ProfileTabIcon, tabBarLabel: 'Profile'}}
-          />
-        </Tab.Navigator>
-      </ItemsProvider>
-    </RoomsProvider>
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: colors.tint,
+        tabBarInactiveTintColor: colors.textSecondary,
+        tabBarStyle: {
+          backgroundColor: colors.backgroundSecondary,
+        },
+      }}>
+      <Tab.Screen
+        name="RoomsTab"
+        component={RoomsStack}
+        options={{tabBarIcon: RoomsTabIcon, tabBarLabel: 'Rooms'}}
+      />
+      <Tab.Screen
+        name="SearchTab"
+        component={SearchStack}
+        options={{tabBarIcon: SearchTabIcon, tabBarLabel: 'Search'}}
+      />
+      <Tab.Screen
+        name="ProfileTab"
+        component={ProfileStack}
+        options={{tabBarIcon: ProfileTabIcon, tabBarLabel: 'Profile'}}
+      />
+    </Tab.Navigator>
   );
 }

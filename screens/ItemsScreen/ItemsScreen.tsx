@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useState} from 'react';
 import {Divider, Row, TouchableOpacity, View} from '../../components/custom';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -8,9 +8,10 @@ import ConfirmationModal from '../../components/ConfirmationModal';
 import ItemCard from './ItemCard';
 import ItemFormModal from './ItemFormModal';
 
+import {createItem, deleteItem, updateItem} from '../../redux/modules/item';
+import useAppDispatch from '../../hooks/useAppDispatch';
 import useColors from '../../hooks/useColors';
 import useContainerItems from '../../hooks/useContainerItems';
-import {ItemsContext} from '../../contexts/ItemsContext';
 
 import type {Item, ItemFormData} from '../../api/items.api';
 
@@ -28,7 +29,7 @@ export type ItemsScreenProps = {
 
 export default function ItemsScreen(props: ItemsScreenProps) {
   const colors = useColors();
-  const {createItem, updateItem, deleteItem} = useContext(ItemsContext);
+  const dispatch = useAppDispatch();
   const [formModalVisible, setFormModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<Item | null>(null);
@@ -43,13 +44,13 @@ export default function ItemsScreen(props: ItemsScreenProps) {
       return;
     }
     if (itemToEdit) {
-      await updateItem(itemToEdit.id, data);
+      await dispatch(updateItem({id: itemToEdit.id, data}));
     } else {
       const createData = {...data, roomId} as ItemFormData;
       if (container) {
         createData.containerId = container.id;
       }
-      await createItem(createData);
+      await dispatch(createItem({data: createData}));
     }
     setItemToEdit(null);
     setFormModalVisible(false);
@@ -59,7 +60,7 @@ export default function ItemsScreen(props: ItemsScreenProps) {
     if (!itemToDelete) {
       return;
     }
-    await deleteItem(itemToDelete.id);
+    await dispatch(deleteItem({id: itemToDelete.id}));
     setDeleteModalVisible(false);
     setItemToDelete(null);
   };

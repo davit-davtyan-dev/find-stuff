@@ -3,6 +3,7 @@ import {FirestoreApi} from './firestore-crud';
 export interface Room {
   id: string;
   name: string;
+  spaceId: string;
   order?: number;
   tags: Array<string>;
   createdAt?: string;
